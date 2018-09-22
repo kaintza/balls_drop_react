@@ -65,69 +65,101 @@
 <script type="text/babel">
 
    class App extends React.Component {
-        render() {
-            return (
-            <div className="main">
-              <BallList/>
-              <Header onClick={() => this.handleClick()} />
-            </div>
-            );
-        }
+       constructor(props) {
+           super(props);
+           this.state = {
+               count:0,
+           score: 0,
+           color: ""}
+       }
 
        handleClick() {
+           const score = this.state.score;
+           const count = this.state.count;
+           this.setState({
+               count: count + 1});
+           let color = "undefined";
            let obj = new Object();
-           obj.count = "read";
+           obj.count = count + 1;
            let jsonString= JSON.stringify(obj);
-console.log(jsonString);
            fetch('/ball', {
                method: 'POST',
                body: jsonString,
                headers:{
                    'Content-Type': 'application/json'
                }})
-               .then(function(response) {
+               .then((response) => {
                    return response.json();
                })
-               .then(function(myJson) {
-                   console.log(JSON.stringify(myJson));
+               .then((myJson) => {
+                   color = myJson.color;
+                   console.log(color);
+                   this.setState({
+                       color: color,
+                       score: score + this.calculateScore(color)});
                });
        }
 
+       calculateScore(color)
+       {
+           let scoreValues = {
+               pink: 1,
+               green: 3,
+               blue: 5,
+               purple: 15,
+           };
+           return scoreValues[color];
+       }
+
+       render() {
+           const count = this.state.count;
+           const score = this.state.score;
+           const color = this.state.color;
+
+           return (
+               <div className="main">
+                   <Header onClick={() => this.handleClick()} count={count} score={score}/>
+                   <BallList color={color}/>
+               </div>
+           );
+       }
    }
 
     class Header extends React.Component {
         render(props) {
           return (
           <div className="grid-container">
-            <Counter/>
-            <Score/>
             <Drop onClick={this.props.onClick}/>
+            <Counter count={this.props.count}/>
+            <Score score={this.props.score}/>
           </div>
-    );
+           );
         }
     }
 
-    function BallList () {
-        return <ul> </ul>;
+    function BallList (props) {
+        return <div className="ball_list_container">
+            <ul className="ball_list"> </ul>
+        </div>
     }
 
-    function Counter () {
-        return <p> Count: </p>;
+    function Counter (props) {
+        return <p> Count:  {props.count} </p>;
     }
 
-    function Score () {
-        return <p> Score: </p>;
+    function Score (props) {
+        return <p> Score: {props.score}</p>;
     }
 
     function Drop (props) {
-        return <button onClick={props.onClick}>
+        return <button className="item1 button" onClick={props.onClick}>
             Drop
         </button>;
     }
 
-
-
     ReactDOM.render(<App/>, document.getElementById('root'));
+
+
 </script>
 
 </body>
