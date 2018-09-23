@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
-  root 'application#index', :to => redirect('/public/index.html')
-  post '/ball' => 'application#show'
+  root 'balls#index', :to => redirect('/public/index.html')
+  post '/ball' => 'balls#show'
 end

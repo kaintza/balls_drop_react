@@ -18,7 +18,8 @@ gem 'puma', '~> 3.11'
 gem 'react-rails'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
-
+gem 'rspec-rails'
+gem 'rspec'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
