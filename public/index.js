@@ -2,6 +2,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            score: 0,
             count: 0,
             colors: []
         }
@@ -37,15 +38,26 @@ class App extends React.Component {
                 currentColor = colors;
                 currentColor.push(color);
                 this.setState({
-                    colors: currentColor
+                    colors: currentColor,
+                    score: this.state.score += this.calculateColor(color)
                 });
             });
     }
 
+    calculateColor(color) {
+        let scoreValues = {
+            pink: 1,
+            green: 3,
+            blue: 5,
+            purple: 15,
+        };
+        return scoreValues[color];
+    }
+
     render() {
         return (
-            <div className="main">
-                <Header onClick={() => this.handleClick()} colors={this.state.colors} count={this.state.count}/>
+            <div className="main shadow">
+                <Header onClick={() => this.handleClick()} score={this.state.score} count={this.state.count}/>
                 <BallList colors={this.state.colors}/>
             </div>
         );
@@ -55,10 +67,10 @@ class App extends React.Component {
 class Header extends React.Component {
     render(props) {
         return (
-            <div className="grid-container">
+            <div className="grid-container shadow">
                 <Drop onClick={this.props.onClick}/>
                 <Counter count={this.props.count}/>
-                <Score colors={this.props.colors}/>
+                <Score score={this.props.score}/>
             </div>
         );
     }
@@ -103,31 +115,19 @@ class Ball extends React.Component {
 
 const Counter = (props) => {
     return (
-        <p> Count: {props.count} </p>
+        <p>Sum: {props.count}</p>
     );
 };
 
 const Score = (props) => {
-    let scoreValues = {
-        pink: 1,
-        green: 3,
-        blue: 5,
-        purple: 15,
-    };
-    let score = 0;
-    if (props.colors.length > 0) {
-        for (var i = 0; i < props.colors.length; i++) {
-            score += scoreValues[props.colors[i]];
-        }
-    }
     return (
-        <p> Score: {score}</p>
+        <p>Score: {props.score}</p>
     );
 };
 
 const Drop = (props) => {
     return (
-        <button className="item1 button" onClick={props.onClick}>
+        <button className="grid-item1 button" onClick={props.onClick}>
             Drop
         </button>
     );
