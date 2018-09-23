@@ -22,7 +22,7 @@ RSpec.describe 'Balls API', type: :request do
     end
 
     let(:blue_input) { { count: 10 } }
-    context 'when count = 15' do
+    context 'when count = 10' do
       before { post '/ball', params: blue_input}
 
       it 'creates a blue ball' do

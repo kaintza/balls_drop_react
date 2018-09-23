@@ -1,4 +1,12 @@
 class App extends React.Component {
+    render(props) {
+        return (
+            <BallGame/>
+        );
+    }
+}
+
+class BallGame extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -8,16 +16,14 @@ class App extends React.Component {
         }
     }
 
-    handleClick() {
-        const count = this.state.count;
-        const colors = this.state.colors;
+    getBallFromServer() {
+        let currentCount = this.state.count + 1;
         this.setState({
-            count: count + 1
+            count: currentCount
         });
 
-        let color = "undefined";
         let obj = new Object();
-        obj.count = count + 1;
+        obj.count = currentCount;
         let jsonString = JSON.stringify(obj);
 
         fetch('/ball', {
@@ -26,20 +32,21 @@ class App extends React.Component {
             headers: {
                 'Content-Type': 'application/json'
             }
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((json) => {
-                color = json.color;
-                let currentColor = [];
-                currentColor = colors;
-                currentColor.push(color);
-                this.setState({
-                    colors: currentColor,
-                    score: this.state.score += this.calculateScore(color)
-                });
-            });
+        }).then(response => {
+            return response.json();
+        }).then(ball => {
+            this.addColor(ball);
+        });
+    }
+
+    addColor(ball) {
+        let color = ball.color;
+        let currentColors = this.state.colors;
+        currentColors.push(color);
+        this.setState({
+            colors: currentColors,
+            score: this.state.score + this.calculateScore(color),
+        });
     }
 
     calculateScore(color) {
@@ -55,24 +62,22 @@ class App extends React.Component {
     render() {
         return (
             <div className="app shadow">
-                <Header onClick={() => this.handleClick()} score={this.state.score} count={this.state.count}/>
+                <Header onClick={() => this.getBallFromServer()} score={this.state.score} count={this.state.count}/>
                 <BallList colors={this.state.colors}/>
             </div>
         );
     }
 }
 
-class Header extends React.Component {
-    render(props) {
-        return (
-            <div className="header shadow">
-                <Drop onClick={this.props.onClick}/>
-                <Counter count={this.props.count}/>
-                <Score score={this.props.score}/>
-            </div>
-        );
-    }
-}
+const Header = (props) => {
+    return (
+        <div className="header shadow">
+            <Drop onClick={props.onClick}/>
+            <Counter count={props.count}/>
+            <Score score={props.score}/>
+        </div>
+    );
+};
 
 const BallList = (props) => {
     return (
@@ -90,6 +95,10 @@ class Ball extends React.Component {
     }
 
     componentDidMount() {
+        this.drawCircle()
+    }
+
+    drawCircle() {
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext("2d");
         let X = canvas.width / 2;
