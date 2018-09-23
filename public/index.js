@@ -11,8 +11,6 @@ class App extends React.Component {
     handleClick() {
         const count = this.state.count;
         const colors = this.state.colors;
-        console.log(colors);
-
         this.setState({
             count: count + 1
         });
@@ -32,19 +30,19 @@ class App extends React.Component {
             .then((response) => {
                 return response.json();
             })
-            .then((myJson) => {
-                color = myJson.color;
+            .then((json) => {
+                color = json.color;
                 let currentColor = [];
                 currentColor = colors;
                 currentColor.push(color);
                 this.setState({
                     colors: currentColor,
-                    score: this.state.score += this.calculateColor(color)
+                    score: this.state.score += this.calculateScore(color)
                 });
             });
     }
 
-    calculateColor(color) {
+    calculateScore(color) {
         let scoreValues = {
             pink: 1,
             green: 3,
@@ -56,7 +54,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="main shadow">
+            <div className="app shadow">
                 <Header onClick={() => this.handleClick()} score={this.state.score} count={this.state.count}/>
                 <BallList colors={this.state.colors}/>
             </div>
@@ -67,7 +65,7 @@ class App extends React.Component {
 class Header extends React.Component {
     render(props) {
         return (
-            <div className="grid-container shadow">
+            <div className="header shadow">
                 <Drop onClick={this.props.onClick}/>
                 <Counter count={this.props.count}/>
                 <Score score={this.props.score}/>
@@ -78,8 +76,8 @@ class Header extends React.Component {
 
 const BallList = (props) => {
     return (
-        <div className="ball_list_container">
-            <ul className="ball_list">
+        <div className="ball-list-container">
+            <ul className="ball-list">
                 {props.colors.map(color => <Ball color={color}/>)}
             </ul>
         </div>
@@ -94,9 +92,9 @@ class Ball extends React.Component {
     componentDidMount() {
         const canvas = this.refs.canvas;
         const ctx = canvas.getContext("2d");
-        var X = canvas.width / 2;
-        var Y = canvas.height / 2;
-        var R = 35;
+        let X = canvas.width / 2;
+        let Y = canvas.height / 2;
+        let R = 35;
         ctx.beginPath();
         ctx.arc(X, Y, R, 0, 2 * Math.PI, false);
         ctx.strokeStyle = this.props.color;

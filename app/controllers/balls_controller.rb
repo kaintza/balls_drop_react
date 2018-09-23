@@ -4,7 +4,7 @@ class BallsController < ActionController::API
 
   def show
     count = params[:count]
-    ball = create_ball(count)
+    ball = create_ball(count.to_i)
     render json: ball.color
   end
 

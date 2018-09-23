@@ -1,4 +1,4 @@
-.main {
+.app {
     background-color: lightgray;
     position: absolute;
     width: 300px;
@@ -9,7 +9,20 @@
     margin: -250px 0 0 -150px;
 }
 
-.ball_list_container {
+.header {
+    z-index: 20;
+    background-color: lightgray;
+    position: relative;
+    width: 300px;
+    height: 100px;
+    margin: 0;
+    text-align: center;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 2px;
+}
+
+.ball-list-container {
     margin: 0;
     padding: 0;
     position: relative;
@@ -19,7 +32,7 @@
     overflow-y: auto;
 }
 
-.ball_list {
+.ball-list {
     list-style-type: none;
     width: auto;
     height: auto;
@@ -39,20 +52,6 @@
 
 .shadow {
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.19);
-}
-
-.grid-container {
-    z-index: 20;
-    background-color: lightgray;
-    position: relative;
-    width: 300px;
-    height: 100px;
-    margin: 0;
-
-    text-align: center;
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-gap: 2px;
 }
 
 .canvas {

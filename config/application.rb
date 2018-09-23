@@ -33,4 +33,3 @@ module BallsDropReact
     config.api_only = true
   end
 end
-ENV['TMP'] = 'C:/Windows/Temp'
