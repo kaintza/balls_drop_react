@@ -70,18 +70,23 @@
            this.state = {
                count:0,
            score: 0,
-           color: ""}
+           colors: []}
        }
 
        handleClick() {
            const score = this.state.score;
            const count = this.state.count;
+           const colors = this.state.colors;
+           console.log(colors);
+
            this.setState({
                count: count + 1});
+
            let color = "undefined";
            let obj = new Object();
            obj.count = count + 1;
            let jsonString= JSON.stringify(obj);
+
            fetch('/ball', {
                method: 'POST',
                body: jsonString,
@@ -93,9 +98,11 @@
                })
                .then((myJson) => {
                    color = myJson.color;
-                   console.log(color);
+                   let currentColor = [];
+                   currentColor = colors;
+                   currentColor.push(color)
                    this.setState({
-                       color: color,
+                       colors: currentColor,
                        score: score + this.calculateScore(color)});
                });
        }
@@ -114,12 +121,11 @@
        render() {
            const count = this.state.count;
            const score = this.state.score;
-           const color = this.state.color;
 
            return (
                <div className="main">
                    <Header onClick={() => this.handleClick()} count={count} score={score}/>
-                   <BallList color={color}/>
+                   <BallList colors={this.state.colors}/>
                </div>
            );
        }
@@ -128,33 +134,76 @@
     class Header extends React.Component {
         render(props) {
           return (
-          <div className="grid-container">
-            <Drop onClick={this.props.onClick}/>
-            <Counter count={this.props.count}/>
-            <Score score={this.props.score}/>
-          </div>
-           );
+            <div className="grid-container">
+              <Drop onClick={this.props.onClick}/>
+              <Counter count={this.props.count}/>
+              <Score score={this.props.score}/>
+            </div>
+          );
         }
     }
 
     function BallList (props) {
-        return <div className="ball_list_container">
-            <ul className="ball_list"> </ul>
-        </div>
+        return (
+            <div className="ball_list_container">
+              <ul className="ball_list">
+                {props.colors.map(color => <Ball color={color}/>)}
+              </ul>
+            </div>
+        );
     }
 
+    class Ball extends React.Component {
+        constructor(props) {
+            super(props);
+        }
+
+        componentDidMount() {
+            const canvas = this.refs.canvas;
+            const ctx = canvas.getContext("2d");
+            var X = canvas.width / 2;
+            var Y = canvas.height / 2;
+            var R = 20;
+            ctx.beginPath();
+            ctx.arc(X, Y, R, 0, 2 * Math.PI, false);
+            ctx.strokeStyle = this.props.color;
+            ctx.fillStyle = this.props.color;
+            ctx.fill();
+            ctx.stroke();
+            this.refs.canvas.scrollIntoView();
+        }
+
+        render() {
+          return (
+              <canvas ref="canvas" width="200" height="100" />
+          );
+        }
+    }
+
+   function Counter (props) {
+       return (
+         <p> Count:  {props.count} </p>
+       );
+   }
+
     function Counter (props) {
-        return <p> Count:  {props.count} </p>;
+        return (
+          <p> Count:  {props.count} </p>
+        );
     }
 
     function Score (props) {
-        return <p> Score: {props.score}</p>;
+        return (
+          <p> Score: {props.score}</p>
+        );
     }
 
     function Drop (props) {
-        return <button className="item1 button" onClick={props.onClick}>
+        return (
+          <button className="item1 button" onClick={props.onClick}>
             Drop
-        </button>;
+          </button>
+        );
     }
 
     ReactDOM.render(<App/>, document.getElementById('root'));
